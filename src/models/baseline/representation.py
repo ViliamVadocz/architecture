@@ -100,3 +100,36 @@ def game_to_tensor(game: tak.Game) -> Tensor:
     tensor[2 * stack_channels_n + 5] = fcd_per_square
 
     return tensor
+
+
+def patterns(n: int) -> int:
+    return (1 << n) - 2
+
+
+def policy_channels(n: int) -> int:
+    piece_types = 3
+    spreads = 4 * patterns(n)
+    return piece_types + spreads
+
+
+def policy_to_tensors(policy: Policy, n: int) -> tuple[Tensor, Tensor]:
+    tensor = tch.zeros((policy_channels(n), n, n), dtype=tch.float32)
+    mask = tch.zeros_like(tensor, dtype=tch.bool)
+
+    patterns_n = patterns(n)
+    for move, probability in policy:
+        row, col = move.square
+        match move.kind:
+            case tak.MoveKind.Place:
+                assert move.piece is not None
+                channel = int(move.piece)
+            case tak.MoveKind.Spread:
+                assert move.direction is not None
+                placement_offset = 3
+                direction_offset = patterns_n * int(move.direction)
+                pattern = (move.pattern >> (8 - n)) - 1
+                channel = placement_offset + direction_offset + pattern  # TODO
+        tensor[channel, row, col] = probability
+        mask[channel, row, col] = True
+
+    return mask, tensor
