@@ -133,3 +133,314 @@ def policy_to_tensors(policy: Policy, n: int) -> tuple[Tensor, Tensor]:
         mask[channel, row, col] = True
 
     return mask, tensor
+
+
+def test_game_to_tensor() -> None:
+    tps = "1,1,2,21,2,2/112S,2,2,21S,1,1/2,11121C,12,2S,2,1/1,211,1212,12,2,2/x,12,x,2112C,2,1/21,x3,1S,1121212S 2 47"
+    tensor = game_to_tensor(tak.game_from_tps(6, tps, 4))
+
+    o = 0
+    x = 1
+    reference = [
+        [
+            # black flats
+            [o, o, o, o, o, o],
+            [o, x, o, o, x, o],
+            [o, o, x, x, x, x],
+            [x, o, x, o, x, o],
+            [o, x, x, o, o, o],
+            [o, o, x, o, x, x],
+        ],
+        [
+            # black walls
+            [o, o, o, o, o, x],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, x, o, o],
+            [x, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black caps
+            [o, o, o, o, o, o],
+            [o, o, o, x, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l2
+            [x, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, x, o, o, o, o],
+            [o, o, o, x, o, o],
+            [o, o, o, x, o, o],
+        ],
+        [
+            # black l3
+            [o, o, o, o, o, x],
+            [o, o, o, o, o, o],
+            [o, x, x, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l4
+            [o, o, o, o, o, o],
+            [o, o, o, x, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l5
+            [o, o, o, o, o, x],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l6
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l7
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l8
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l9
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l10
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l11
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l12
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # black l13
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white flats
+            [x, o, o, o, o, o],
+            [o, o, o, o, o, x],
+            [x, x, o, o, o, o],
+            [o, o, o, o, o, x],
+            [o, o, o, o, x, x],
+            [x, x, o, x, o, o],
+        ],
+        [
+            # white walls
+            [o, o, o, o, x, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, x, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white caps
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, x, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l2
+            [o, o, o, o, o, x],
+            [o, x, o, x, o, o],
+            [o, x, x, x, o, o],
+            [o, o, x, o, o, o],
+            [x, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l3
+            [o, o, o, o, o, o],
+            [o, o, o, x, o, o],
+            [o, o, o, o, o, o],
+            [o, x, o, o, o, o],
+            [x, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l4
+            [o, o, o, o, o, x],
+            [o, o, o, o, o, o],
+            [o, o, x, o, o, o],
+            [o, x, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l5
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, x, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l6
+            [o, o, o, o, o, x],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l7
+            [o, o, o, o, o, x],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l8
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l9
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l10
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l11
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l12
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        [
+            # white l13
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+            [o, o, o, o, o, o],
+        ],
+        # black stones
+        [[4 / 30] * 6] * 6,
+        # black caps
+        [[0 / 1] * 6] * 6,
+        # white stones
+        [[1 / 30] * 6] * 6,
+        # white caps
+        [[0 / 1] * 6] * 6,
+        # to_move = black
+        [[x] * 6] * 6,
+        # fcd
+        [[(10 - (14 + 2)) / 36] * 6] * 6,
+    ]
+    tch.testing.assert_close(tensor, Tensor(reference))
+
+
+def test_policy_to_tensors() -> None:
+    n = 6
+    tps = "2,22112,x,2,2,1/2,x,2221C,112S,2,2S/2,x2,1,1,2121S/2,1,2,2,2S,2S/1,1,2,1112C,11121S,x/1,12221S,1,1,1112S,1 1 43"  # noqa: E501
+    game = tak.game_from_tps(n, tps, 4)
+    moves = game.possible_moves()
+    num_moves = len(moves)
+    gauss = num_moves * (num_moves + 1) / 2
+    policy = [(m, (i + 1) / gauss) for i, m in enumerate(moves)]
+
+    mask_tensor, policy_tensor = policy_to_tensors(policy, n)
+
+    # Only testing properties because I am too lazy to compute the index of each move manually.
+    assert mask_tensor.sum() == num_moves
+    assert policy_tensor.sum() == 1.0
+    assert (policy_tensor >= 0).all()
+    tch.testing.assert_close(policy_tensor > 0, mask_tensor)
