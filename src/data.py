@@ -47,7 +47,7 @@ class TakDataset(IterableDataset):
             game = tak.game_from_tps(SIZE, tps, HALF_KOMI)
             value: Value = float(value)
             policy: Policy = [(tak.Move(m), float(p)) for m, p in (mp.split(":") for mp in policy.split(","))]
-            mask, policy = self.policy_to_tensors(policy, SIZE)
+            mask, policy = self.policy_to_tensors(policy, game.size)
             yield Data(observation=self.game_to_tensor(game), value=value, mask=mask, policy=policy)
 
 
