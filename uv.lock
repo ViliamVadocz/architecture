@@ -35,7 +35,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "takpy", specifier = ">=0.9.0" },
+    { name = "takpy", specifier = ">=0.10.0" },
     { name = "torch", specifier = ">=2.10.0", index = "https://download.pytorch.org/whl/cu130" },
     { name = "torchvision", specifier = ">=0.25.0", index = "https://download.pytorch.org/whl/cu130" },
     { name = "wandb", specifier = ">=0.24.0" },
@@ -983,11 +983,11 @@ wheels = [
 
 [[package]]
 name = "takpy"
-version = "0.9.0"
+version = "0.10.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b8/98/3c9bdd7cd94d31de8eb422e311d0213be0d11917abdc8603edc772c0016d/takpy-0.9.0.tar.gz", hash = "sha256:fe05c9ab31fe35e0446e78a0320ebadd09868fa757c899ec4f3defa58cdef0ef", size = 8803, upload-time = "2026-01-27T18:19:47.965Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/eb/76/9175492d331ec28d3e43a0bd2c30b709606883275bf1896efe1116db1e6c/takpy-0.10.0.tar.gz", hash = "sha256:91cb515ffad4193a4947e3285f5ddc1285add2f2df5ffd1c1d4507f6a1039b11", size = 9034, upload-time = "2026-02-03T07:20:17.421Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/05/cb/4d4da1793d0727cc7f931964fee69d97838e4eb4a3fe351fa2d1525c34eb/takpy-0.9.0-cp312-none-win_amd64.whl", hash = "sha256:3a9d8efa28dea573b3d7c17a1d0f317612a2062da2625c8ef03c3f88bfbcef3e", size = 277168, upload-time = "2026-01-27T18:19:45.929Z" },
+    { url = "https://files.pythonhosted.org/packages/05/dd/88351f22c50d6565b0cb651ba3e3034d48b4795b45318b0e8911d31ae6e5/takpy-0.10.0-cp312-none-win_amd64.whl", hash = "sha256:ae5e839ddc9c6916b5ff385991fccb4c3c9295bc16b46b0632d1ea5b374f71c7", size = 264494, upload-time = "2026-02-03T07:20:15.449Z" },
 ]
 
 [[package]]
