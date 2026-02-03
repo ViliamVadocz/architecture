@@ -21,3 +21,5 @@ wheels/
 .wandb
 checkpoints
 
+# Compressed data and executables
+bin
