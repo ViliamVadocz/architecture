@@ -9,6 +9,8 @@ dependencies = [
     "takpy>=0.10.0",
     "torch>=2.10.0",
     "torchvision>=0.25.0",
+    "matplotlib>=3.10.8",
+    "safetensors>=0.7.0",
 ]
 
 [[tool.uv.index]]
