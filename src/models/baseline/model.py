@@ -7,15 +7,15 @@ from models.common import ConvBlock, ModelOutput, ResidualBlock
 # https://github.com/ViliamVadocz/takzero/blob/main/takzero/src/network/net6_simhash.rs
 N = 6
 HALF_KOMI = 4
-CORE_RES_BLOCKS = 16
-FILTERS = 256
+CORE_RES_BLOCKS = 8
+FILTERS = 128
 
 
 class Baseline(nn.Module):
     def __init__(
         self,
-        input_channels: int,
-        policy_channels: int,
+        input_channels: int = input_channels(N),
+        policy_channels: int = policy_channels(N),
         board_size: int = N,
         core_res_blocks: int = CORE_RES_BLOCKS,
         filters: int = FILTERS,
