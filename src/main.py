@@ -7,7 +7,7 @@ from torch import Tensor, nn, optim
 from torch.utils.data import DataLoader
 from torch.utils.data.datapipes.iter.combinatorics import ShufflerIterDataPipe
 
-from data import SIZE, Data, TakDataset
+from data import Data, TakDataset
 from models.baseline.model import Baseline
 from models.baseline.representation import game_to_tensor, policy_to_tensors
 
@@ -118,9 +118,9 @@ if __name__ == "__main__":
     config.checkpoint_dir.mkdir(exist_ok=True)
 
     current_dir = Path.cwd()
-    decompress = current_dir / "bin" / "decompress"
-    selfplay_bin = current_dir / "bin" / "compressed-selfplay.bin"
-    selfplay_dataset = TakDataset(f"{decompress} {selfplay_bin} {SIZE}", game_to_tensor, policy_to_tensors)
+    # reanalyze_targets = current_dir / "target-reanalyze-reversed.txt"
+    selfplay_targets = current_dir / "target-selfplay-reversed.txt"
+    selfplay_dataset = TakDataset(selfplay_targets, game_to_tensor, policy_to_tensors)
 
     train_loader = ShufflerIterDataPipe(DataLoader(selfplay_dataset, batch_size=config.batch_size, num_workers=0))
     validation_loader = ShufflerIterDataPipe(DataLoader(selfplay_dataset, batch_size=config.batch_size, num_workers=0))

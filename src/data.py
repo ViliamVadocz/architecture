@@ -1,4 +1,4 @@
-import subprocess
+import sys
 from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import NamedTuple
@@ -25,30 +25,26 @@ class Data(NamedTuple):
 class TakDataset(IterableDataset):
     def __init__(
         self,
-        decompress_command: list[str],
+        target_path: Path,
         game_to_tensor: Callable[[tak.Game], Tensor],
         policy_to_tensors: Callable[[Policy, int], tuple[Tensor, Tensor]],
     ) -> None:
-        self.decompress_command = decompress_command
+        self.target_path = target_path
         self.game_to_tensor = game_to_tensor
         self.policy_to_tensors = policy_to_tensors
 
     def __iter__(self) -> Generator[Data]:
-        process = subprocess.Popen(
-            self.decompress_command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            bufsize=1,  # life buffered
-            universal_newlines=True,
-        )
-
-        for line in process.stdout:
-            [tps, value, policy] = line.split(";")
-            game = tak.game_from_tps(SIZE, tps, HALF_KOMI)
-            value: Value = float(value)
-            policy: Policy = [(tak.Move(m), float(p)) for m, p in (mp.split(":") for mp in policy.split(","))]
-            mask, policy = self.policy_to_tensors(policy, game.size)
-            yield Data(observation=self.game_to_tensor(game), value=value, mask=mask, policy=policy)
+        with self.target_path.open("r") as f:
+            for line in f:
+                try:
+                    [tps, value, _ube, policy] = line.split(";")
+                    game = tak.game_from_tps(SIZE, tps, HALF_KOMI)
+                    value: Value = float(value)
+                    policy: Policy = [(tak.Move(m), float(p)) for m, p in (mp.split(":") for mp in policy.split(","))]
+                    mask, policy = self.policy_to_tensors(policy, game.size)
+                    yield Data(observation=self.game_to_tensor(game), value=value, mask=mask, policy=policy)
+                except Exception as e:
+                    print(e, file=sys.stderr)
 
 
 def test_data_loading() -> None:
@@ -57,9 +53,8 @@ def test_data_loading() -> None:
     device = "cuda" if tch.cuda.is_available() else "cpu"
 
     current_dir = Path.cwd()
-    decompress = current_dir / "bin" / "decompress"
-    selfplay_bin = current_dir / "bin" / "compressed-selfplay.bin"
-    selfplay_dataset = TakDataset(f"{decompress} {selfplay_bin} {SIZE}", game_to_tensor, policy_to_tensors)
+    selfplay_targets = current_dir / "target-selfplay-reversed.txt"
+    selfplay_dataset = TakDataset(selfplay_targets, game_to_tensor, policy_to_tensors)
 
     train_loader = DataLoader(selfplay_dataset, batch_size=batch_size, num_workers=0)
 
