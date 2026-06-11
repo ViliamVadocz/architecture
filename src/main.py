@@ -94,7 +94,6 @@ def validate(model: nn.Module, loader: DataLoader, device: str, batches: int = 1
 
             policy, value = model(observation)
             _, _, loss = loss_fn(policy, policy_target, policy_mask, value, value_target)
-            loss = loss_fn(policy, policy_target, policy_mask, value, value_target)
             total_loss += loss.sum()
             count += 1
             if count >= batches:
