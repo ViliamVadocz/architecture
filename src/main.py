@@ -94,7 +94,7 @@ def validate(model: nn.Module, loader: DataLoader, device: str, batches: int = 1
             policy_mask = batch.mask.to(device)
             policy_target = batch.policy.to(device)
 
-            value, policy = model(observation)
+            policy, value = model(observation)
             _, _, loss = loss_fn(policy, policy_target, policy_mask, value, value_target)
             loss = loss_fn(value, policy, value_target, policy_target)
             total_loss += loss
@@ -172,7 +172,7 @@ if __name__ == "__main__":
             policy_target = batch.policy.to(device)
 
             optimizer.zero_grad()
-            value, policy = model(observation)
+            policy, value = model(observation)
             policy_loss, value_loss, total_loss = loss_fn(policy, policy_target, policy_mask, value, value_target)
             total_loss.backward()
             optimizer.step()
