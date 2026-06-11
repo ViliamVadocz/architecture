@@ -177,9 +177,9 @@ if __name__ == "__main__":
             total_loss.backward()
             optimizer.step()
 
-            epoch_policy_loss += policy_loss
-            epoch_value_loss += value_loss
-            epoch_total_loss += total_loss
+            epoch_policy_loss += policy_loss.detach()
+            epoch_value_loss += value_loss.detach()
+            epoch_total_loss += total_loss.detach()
             batch_count += 1
 
             step += 1
