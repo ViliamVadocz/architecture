@@ -66,13 +66,13 @@ def test_data_loading() -> None:
         if i >= test_iterations:
             break
         observation = batch.observation.to(device)
-        value_target = batch.value.to(device)
+        value_target = batch.value.to(device, dtype=tch.float32)
         policy_mask = batch.mask.to(device)
         policy_target = batch.policy.to(device)
         assert observation.shape == (batch_size, input_channels(SIZE), SIZE, SIZE)
         assert observation.dtype == tch.float32
         assert value_target.shape == (batch_size,)
-        assert value_target.dtype == tch.float64
+        assert value_target.dtype == tch.float32
         assert policy_mask.shape == (batch_size, policy_channels(SIZE), SIZE, SIZE)
         assert policy_mask.dtype == tch.bool
         assert policy_target.shape == (batch_size, policy_channels(SIZE), SIZE, SIZE)

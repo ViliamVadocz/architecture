@@ -90,7 +90,7 @@ def validate(model: nn.Module, loader: DataLoader, device: str, batches: int = 1
         batch: Data
         for batch in loader:
             observation = batch.observation.to(device)
-            value_target = batch.value.to(device)
+            value_target = batch.value.to(device, dtype=tch.float32)
             policy_mask = batch.mask.to(device)
             policy_target = batch.policy.to(device)
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         batch: Data
         for batch in train_loader:
             observation = batch.observation.to(device)
-            value_target = batch.value.to(device)
+            value_target = batch.value.to(device, dtype=tch.float32)
             policy_mask = batch.mask.to(device)
             policy_target = batch.policy.to(device)
 
