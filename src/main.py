@@ -208,7 +208,7 @@ if __name__ == "__main__":
                 "epoch_policy_loss": epoch_policy_loss / batch_count,
                 "epoch_value_loss": epoch_value_loss / batch_count,
                 "epoch_total_loss": epoch_total_loss / batch_count,
-                "validation_loss": validation_loss.item(),
+                "validation_loss": validation_loss,
             },
             step,
         )
