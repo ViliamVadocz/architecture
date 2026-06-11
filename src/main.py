@@ -80,7 +80,7 @@ def load_checkpoint(
     return checkpoint.epoch, checkpoint.best_validation_loss
 
 
-def validate(model: nn.Module, loader: DataLoader, device: str) -> float:
+def validate(model: nn.Module, loader: DataLoader, device: str, batches: int = 1024) -> float:
     model.eval()
     total_loss = 0
     count = 0
@@ -97,6 +97,8 @@ def validate(model: nn.Module, loader: DataLoader, device: str) -> float:
             loss = loss_fn(value, policy, value_target, policy_target)
             total_loss += loss
             count += 1
+            if count >= batches:
+                break
     avg_val_loss = total_loss / count
     assert isinstance(avg_val_loss, Tensor)
     return avg_val_loss.item()
