@@ -55,6 +55,7 @@ def save_checkpoint(  # noqa: PLR0913
     epoch: int,
     best_validation_loss: float,
 ) -> None:
+    path.parent.mkdir(exist_ok=True)
     checkpoint = Checkpoint(
         model_state=model.state_dict(),
         optimizer_state=optimizer.state_dict(),
