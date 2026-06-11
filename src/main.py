@@ -152,6 +152,7 @@ if __name__ == "__main__":
     )
 
     # Training loop
+    step = 0
     for epoch in range(start_epoch, config.epochs):
         model.train()
         epoch_policy_loss = tch.zeros(())
@@ -177,6 +178,17 @@ if __name__ == "__main__":
             epoch_total_loss += total_loss
             batch_count += 1
 
+            step += 1
+            if step % 100 == 0:  # every 100 batches
+                wandb.log(
+                    {
+                        "policy_loss": policy_loss,
+                        "value_loss": value_loss,
+                        "total_loss": total_loss,
+                    },
+                    step,
+                )
+
         validation_loss = validate(model, validation_loader, device)
         if validation_loss < best_validation_loss:
             best_validation_loss = validation_loss
@@ -190,12 +202,13 @@ if __name__ == "__main__":
 
         wandb.log(
             {
-                "policy_loss": policy_loss / batch_count,
-                "value_loss": value_loss / batch_count,
-                "total_loss": epoch_total_loss / batch_count,
-                "validation_loss": validation_loss.item(),
                 "epoch": epoch,
-            }
+                "epoch_policy_loss": epoch_policy_loss / batch_count,
+                "epoch_value_loss": epoch_value_loss / batch_count,
+                "epoch_total_loss": epoch_total_loss / batch_count,
+                "validation_loss": validation_loss.item(),
+            },
+            step,
         )
 
         scheduler.step()
