@@ -19,7 +19,9 @@ def loss_fn(
     value: Tensor,
     value_target: Tensor,
 ) -> tuple[Tensor, Tensor, Tensor]:
-    policy_loss = nn.functional.cross_entropy(policy[policy_mask], policy_target[policy_mask])
+    pol_input = tch.where(policy_mask, policy, float("-inf"))
+    pol_target = tch.where(policy_mask, policy_target, 0.0)
+    policy_loss = nn.functional.cross_entropy(pol_input, pol_target)
     value_loss = nn.functional.mse_loss(value, value_target)
     total_loss = value_loss + policy_loss
     return policy_loss, value_loss, total_loss

@@ -53,7 +53,7 @@ class TakDataset(IterableDataset):
 def test_data_loading() -> None:
     batch_size = 256
     test_iterations = 16
-    device = "cuda" if tch.cuda.is_available() else "cpu"
+    device = "cpu"  # "cuda" if tch.cuda.is_available() else "cpu"
 
     current_dir = Path.cwd()
     selfplay_targets = current_dir / "target-selfplay-reversed.txt"
@@ -77,4 +77,8 @@ def test_data_loading() -> None:
         assert policy_mask.dtype == tch.bool
         assert policy_target.shape == (batch_size, policy_channels(SIZE), SIZE, SIZE)
         assert policy_target.dtype == tch.float32
+        masked_policy = tch.where(policy_mask, policy_target, float("-inf"))
+        assert policy_target.shape == (batch_size, policy_channels(SIZE), SIZE, SIZE)
+        assert masked_policy.dtype == tch.float32
         tch.testing.assert_close(policy_target.sum(dim=(1, 2, 3)), tch.ones((batch_size,), dtype=tch.float32))
+        assert ((policy_target >= 0.0) & (policy_target <= 1.0)).all()
