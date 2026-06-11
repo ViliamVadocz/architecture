@@ -159,9 +159,9 @@ if __name__ == "__main__":
     step = 0
     for epoch in range(start_epoch, config.epochs):
         model.train()
-        epoch_policy_loss = tch.zeros(())
-        epoch_value_loss = tch.zeros(())
-        epoch_total_loss = tch.zeros(())
+        epoch_policy_loss = tch.zeros((), device=device)
+        epoch_value_loss = tch.zeros((), device=device)
+        epoch_total_loss = tch.zeros((), device=device)
         batch_count = 0
 
         batch: Data
