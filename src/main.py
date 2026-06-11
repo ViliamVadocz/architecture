@@ -109,9 +109,9 @@ if __name__ == "__main__":
     device = "cuda"
 
     config = Config(
-        learning_rate=1e-4,
-        epochs=50,
-        checkpoint_interval=5,
+        learning_rate=1e-3,
+        epochs=100,
+        checkpoint_interval=1,
         checkpoint_dir=Path("./checkpoints").absolute(),
         batch_size=256,
         resume=None,
@@ -120,15 +120,15 @@ if __name__ == "__main__":
 
     current_dir = Path.cwd()
     selfplay_path = current_dir / "target-selfplay-reversed.txt"
-    reanalyze_path = current_dir / "target-selfplay-reversed.txt"
+    reanalyze_path = current_dir / "target-reanalyze-reversed.txt"
 
     train_dataset = TakDataset(selfplay_path, game_to_tensor, policy_to_tensors)
     train_shuffled_dataset = ShufflerIterDataPipe(train_dataset)
-    train_loader = DataLoader(train_shuffled_dataset, batch_size=config.batch_size, num_workers=8)
+    train_loader = DataLoader(train_shuffled_dataset, batch_size=config.batch_size, num_workers=16)
 
     validation_dataset = TakDataset(reanalyze_path, game_to_tensor, policy_to_tensors)
     validation_shuffled_dataset = ShufflerIterDataPipe(validation_dataset)
-    validation_loader = DataLoader(validation_shuffled_dataset, batch_size=config.batch_size, num_workers=8)
+    validation_loader = DataLoader(validation_shuffled_dataset, batch_size=config.batch_size, num_workers=16)
 
     model: nn.Module = Baseline()
     model.to(device)
