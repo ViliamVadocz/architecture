@@ -118,12 +118,16 @@ if __name__ == "__main__":
     config.checkpoint_dir.mkdir(exist_ok=True)
 
     current_dir = Path.cwd()
-    # reanalyze_targets = current_dir / "target-reanalyze-reversed.txt"
-    selfplay_targets = current_dir / "target-selfplay-reversed.txt"
-    selfplay_dataset = TakDataset(selfplay_targets, game_to_tensor, policy_to_tensors)
+    selfplay_path = current_dir / "target-selfplay-reversed.txt"
+    reanalyze_path = current_dir / "target-selfplay-reversed.txt"
 
-    train_loader = ShufflerIterDataPipe(DataLoader(selfplay_dataset, batch_size=config.batch_size, num_workers=0))
-    validation_loader = ShufflerIterDataPipe(DataLoader(selfplay_dataset, batch_size=config.batch_size, num_workers=0))
+    train_dataset = TakDataset(selfplay_path, game_to_tensor, policy_to_tensors)
+    train_shuffled_dataset = ShufflerIterDataPipe(train_dataset)
+    train_loader = DataLoader(train_shuffled_dataset, batch_size=config.batch_size, num_workers=8)
+
+    validation_dataset = TakDataset(reanalyze_path, game_to_tensor, policy_to_tensors)
+    validation_shuffled_dataset = ShufflerIterDataPipe(validation_dataset)
+    validation_loader = DataLoader(validation_shuffled_dataset, batch_size=config.batch_size, num_workers=8)
 
     model: nn.Module = Baseline()
     model.to(device)
