@@ -34,8 +34,11 @@ class TakDataset(IterableDataset):
         self.policy_to_tensors = policy_to_tensors
 
     def __iter__(self) -> Generator[Data]:
+        worker_info = tch.utils.data.get_worker_info()
         with self.target_path.open("r") as f:
-            for line in f:
+            for i, line in enumerate(f):
+                if worker_info is not None and i % worker_info.num_workers != worker_info.id:
+                    continue  # split lines amonst workers
                 try:
                     [tps, value, _ube, policy] = line.split(";")
                     game = tak.game_from_tps(SIZE, tps, HALF_KOMI)
@@ -44,7 +47,7 @@ class TakDataset(IterableDataset):
                     mask, policy = self.policy_to_tensors(policy, game.size)
                     yield Data(observation=self.game_to_tensor(game), value=value, mask=mask, policy=policy)
                 except Exception as e:
-                    print(e, file=sys.stderr)
+                    print(f"[{i}] {e}", file=sys.stderr)
 
 
 def test_data_loading() -> None:
